@@ -5,7 +5,7 @@ endif()
 
 find_package( Gperftools QUIET )
 if( GPERFTOOLS_FOUND )
-    message( STATUS "Found gperftools; compiling with TCMalloc")
+    message( STATUS "Found gperftools; compiling eosio-launcher with TCMalloc")
     list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )
 endif()
 
@@ -18,18 +18,22 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../../.git)
       OUTPUT_VARIABLE "launcher_BUILD_VERSION"
       ERROR_QUIET
       OUTPUT_STRIP_TRAILING_WHITESPACE)
-    message(STATUS "Git commit revision: ${launcher_BUILD_VERSION}")
+    message(STATUS "Git commit revision: ${eosio-launcher_BUILD_VERSION}")
   else()
     set(launcher_BUILD_VERSION 0)
   endif()
+else()
+  set(launcher_BUILD_VERSION 0)
 endif()
 
 configure_file(config.hpp.in config.hpp ESCAPE_QUOTES)
 
-target_include_directories(eosio-launcher PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(eosio-launcher PUBLIC ${CMAKE_CURRENT_BINARY_DIR} )
 
-target_link_libraries(eosio-launcher
-                      PRIVATE eosio_chain fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
+target_link_libraries( eosio-launcher
+        PRIVATE appbase
+        PRIVATE launcher_plugin
+        PRIVATE eosio_chain fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
 
 install( TARGETS
    eosio-launcher
