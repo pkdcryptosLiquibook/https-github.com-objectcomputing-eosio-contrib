@@ -1404,7 +1404,7 @@ launcher_def::start_all (std::string &gts, launch_modes mode) {
   }
   }
   bfs::path savefile = "last_run.json";
-  ilog("Writing last_run file to: ${save_file}", ("save_file", bfs::canonical(savefile).string()));
+  ilog("Writing last_run file to: ${save_file}", ("save_file", savefile.string()));
   bfs::ofstream sf (savefile);
 
   sf << fc::json::to_pretty_string (last_run) << std::endl;
